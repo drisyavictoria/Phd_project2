@@ -1,0 +1,22 @@
+library(waveslim)
+
+dat=scan('/home/drisya/paper2/decompse/wave.dat')
+y=dat[1:length(dat)]
+
+  y1=y[1:4320]
+  level=17
+  rows=level+1
+  sampl=array(0,dim=c(rows,length(y1)))
+  for(k in 1:rows){
+    coeff.level <- modwt(y1,"la8",n.levels=level,boundary="reflection")
+    all=c("d1","d2","d3","d4","d5","d6","d7","d8","d9","d10","d11","d12","d13","d14","d15","d16","d17","s1") 
+    x.basis <- basis(coeff.level,all[k])
+    for(i in 1:length(coeff.level)){
+      coeff.level[[i]] <- x.basis[i] * coeff.level[[i]]
+    }
+    sampl[k,]<- imodwt(coeff.level)
+  }
+  specify_decimal<- function (x,k) format(round(x,k), nsmall=k)
+  write.table(t(specify_decimal(sampl[],6)), file=paste("/home/drisya/paper2/decompse/sampl.dat",sep=""),col.names=FALSE,row.names=FALSE)
+  
+
